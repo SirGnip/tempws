@@ -69,7 +69,7 @@ class BroadcastPreparedServerFactory(BroadcastServerFactory):
 
 
 if __name__ == '__main__':
-    print 'APP is trying to come up...........................................................'
+    print 'TEMP version of APP is trying to come up...........................................................'
 
     log.startLogging(sys.stdout)
 
