@@ -20,6 +20,7 @@ class BroadcastServerProtocol(WebSocketServerProtocol):
             # msg = "{} from {}".format(payload.decode('utf8'), self.peer)
             msg = payload.decode('utf8')
             #print 'onMessage', type(self), self
+            print 'onMessage peer', self.peer, type(self.peer)
             self.factory.broadcast(msg, self)
 
     def connectionLost(self, reason):
