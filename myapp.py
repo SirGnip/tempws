@@ -20,7 +20,34 @@ class BroadcastServerProtocol(WebSocketServerProtocol):
             # msg = "{} from {}".format(payload.decode('utf8'), self.peer)
             msg = payload.decode('utf8')
             #print 'onMessage', type(self), self
-            print 'onMessage peer', self.peer, type(self.peer)
+            print '----- Received msg from', self.peer
+
+            # print '\n----- self', type(self)
+            # print '-', self
+            # # print dir(self)
+            # print '\n--- peer', type(self.peer)
+            # print '-', self.peer
+            # # print dir(self.peer)
+            # print '\n--- factory', type(self.factory)
+            # print '-', self.factory
+            # print 'host', self.factory.host
+            # print 'port', self.factory.port
+            # print 'externalPort', self.factory.externalPort
+            # print 'path', self.factory.path
+            # print 'server', self.factory.server
+            # print 'url', self.factory.url
+            # # print dir(self.factory)
+            # print '\n--- transport', type(self.transport)
+            # print '-', self.transport
+            # print 'hostname', self.transport.hostname
+            # print 'client', self.transport.client
+            # print 'server', self.transport.server
+            # print 'socket', self.transport.socket
+            # print 'getHost()', self.transport.getHost()
+            # print 'getPeer()', self.transport.getPeer()
+
+            # print self.transport
+            # print dir(self.transport)
             self.factory.broadcast(msg, self)
 
     def connectionLost(self, reason):
@@ -47,14 +74,16 @@ class BroadcastServerFactory(WebSocketServerFactory):
             self.clients.remove(client)
 
     def broadcast(self, msg, source):
-        print("Broadcasting from {} (total clients={})".format(source.peer, len(self.clients)))
-        print msg
+        print("Broadcasting msg from {} (total clients={})".format(source.peer, len(self.clients)))
+        # print msg
         for c in self.clients:
             if c == source:
                 #print 'skipping broadcast to original source:', type(c), c
                 continue
             c.sendMessage(msg.encode('utf8'))
-            print("message sent to {}".format(c.peer))
+            # print("message sent to {}".format(c.peer))
+            print 'message sent from %s to %s' % (c.transport.getHost(), c.transport.getPeer())
+            # print 'client: ', type(c)
 
 
 class BroadcastPreparedServerFactory(BroadcastServerFactory):
@@ -80,7 +109,7 @@ if __name__ == '__main__':
     # factory = ServerFactory(u"ws://127.0.0.1:9000")
     port = int(os.environ.get("PORT", 5000))
     print 'PORT from environment', port
-    factory = ServerFactory(u"ws://0.0.0.0:" + unicode(port), externalPort=80)
+    factory = ServerFactory(u"ws://0.0.0.0:" + unicode(port), externalPort=80) #externalPort=5000 for local testing
     factory.protocol = BroadcastServerProtocol
 
     print 'isSecure', factory.isSecure
